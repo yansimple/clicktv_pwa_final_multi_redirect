@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Установи наше приложение</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="icon-192.png" type="image/png">
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f2f2f2;
+      text-align: center;
+    }
+    button {
+      padding: 1em 2em;
+      font-size: 1.2em;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Установите приложение ClickTV</h1>
+  <p>После установки вы сможете запускать приложение прямо с главного экрана</p>
+  <button id="installBtn" style="display: none;">УСТАНОВИТЬ</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+      // 👉 Автоматический редирект, если приложение уже установлено
+      if (isStandalone) {
+        window.location.replace('app.html');
+      }
+
+      // 👉 Запасной редирект через таймер (на случай глюков)
+      setTimeout(() => {
+        if (document.visibilityState === 'visible') {
+          const againStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+          if (againStandalone) window.location.replace('app.html');
+        }
+      }, 3000);
+    });
+
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('installBtn');
+      btn.style.display = 'inline-block';
+
+      btn.addEventListener('click', () => {
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          window.location.replace('app.html'); // 👉 если PWA уже установлено
+          return;
+        }
+
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('PWA установлено — перенаправляем...');
+            setTimeout(() => window.location.replace('app.html'), 2000);
+          } else {
+            console.log('Пользователь отказался');
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker зарегистрирован'));
+    }
+  </script>
+</body>
+</html>
