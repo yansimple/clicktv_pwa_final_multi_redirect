@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Установи наше приложение</title>
+  <title>VULKAN CASINO</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="icon-192.png" type="image/png">
@@ -35,7 +35,7 @@
   </style>
 </head>
 <body>
-  <h1>Установите приложение ClickTV</h1>
+  <h1>Установите приложение VULKAN CASINO</h1>
   <p>После установки вы сможете запускать приложение прямо с главного экрана</p>
   <button id="installBtn" style="display: none;">УСТАНОВИТЬ</button>
 
@@ -48,7 +48,7 @@
         window.location.replace('app.html');
       }
 
-      // 👉 Запасной редирект через таймер (на случай глюков)
+      // 👉 Запасной редирект через таймер
       setTimeout(() => {
         if (document.visibilityState === 'visible') {
           const againStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -67,7 +67,7 @@
 
       btn.addEventListener('click', () => {
         if (window.matchMedia('(display-mode: standalone)').matches) {
-          window.location.replace('app.html'); // 👉 если PWA уже установлено
+          window.location.replace('app.html'); // 
           return;
         }
 
